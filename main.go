@@ -2,12 +2,13 @@ package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"log"
 	"os"
 )
 
-const problemsFilename = "problems.csv"
+const defaultProblemsFilename = "problems.csv"
 
 type Problem struct {
 	Question string
@@ -58,7 +59,10 @@ func answerProblems(problems []Problem) int {
 }
 
 func main() {
-	problems, err := readProblems(problemsFilename)
+	filename := flag.String("csv", defaultProblemsFilename, "a csv file in the format of 'question,answer'")
+	flag.Parse()
+
+	problems, err := readProblems(*filename)
 	if err != nil {
 		log.Fatalf("read problems: %v", err)
 	}
