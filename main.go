@@ -26,6 +26,7 @@ func readProblems(filename string) ([]Problem, error) {
 	if err != nil {
 		return make([]Problem, 0), err
 	}
+	defer file.Close()
 
 	r := csv.NewReader(file)
 	records, err := r.ReadAll()
@@ -46,13 +47,13 @@ func readProblems(filename string) ([]Problem, error) {
 // answerProblem prints the question of problem p at index i and reads the user answer
 // from standard input. It sends the result of the user answer as a boolean to
 // channel c.
-func answerProblem(p Problem, i int, c chan<- bool) {
+func answerProblem(p Problem, i int, c chan<- string) {
 	fmt.Printf("Problem #%d: %s = ", i+1, p.Question)
 
 	var answer string
 	fmt.Scanln(&answer)
 
-	c <- answer == p.Answer
+	c <- answer
 }
 
 // answerProblems prints each question of the problem and reads the user answer
@@ -60,18 +61,18 @@ func answerProblem(p Problem, i int, c chan<- bool) {
 // the number of problems answered correctly.
 func answerProblems(problems []Problem, limit time.Duration) int {
 	correct := 0
-	answer := make(chan bool)
+	answerCh := make(chan string)
 	timeout := time.After(limit)
 
 	for i, p := range problems {
-		go answerProblem(p, i, answer)
+		go answerProblem(p, i, answerCh)
 
 		select {
 		case <-timeout:
 			fmt.Println()
 			return correct
-		case isCorrect := <-answer:
-			if isCorrect {
+		case answer := <-answerCh:
+			if answer == p.Answer {
 				correct++
 			}
 		}
