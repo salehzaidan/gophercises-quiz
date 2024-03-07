@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func createTempProblemsFile(dir string, problems []Problem) (*os.File, error) {
+func createTempProblemsFile(dir string, problems []problem) (*os.File, error) {
 	file, err := os.CreateTemp(dir, "problems*.csv")
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func createTempProblemsFile(dir string, problems []Problem) (*os.File, error) {
 }
 
 func TestReadProblems(t *testing.T) {
-	expectedProblems := []Problem{
+	expectedProblems := []problem{
 		{"5+5", "10"},
 		{"1+1", "2"},
 	}
@@ -56,7 +56,7 @@ func TestReadProblems(t *testing.T) {
 }
 
 func TestAnswerProblem(t *testing.T) {
-	expectedProblem := Problem{"5+5", "10"}
+	expectedProblem := problem{"5+5", "10"}
 
 	r, w, err := os.Pipe()
 	if err != nil {
@@ -83,7 +83,7 @@ func TestAnswerProblem(t *testing.T) {
 }
 
 func TestAnswerProblems(t *testing.T) {
-	expectedProblems := []Problem{
+	expectedProblems := []problem{
 		{"5+5", "10"},
 		{"1+1", "2"},
 	}

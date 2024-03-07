@@ -15,30 +15,30 @@ const (
 	defaultTimeLimit        = 30
 )
 
-type Problem struct {
+type problem struct {
 	Question string
 	Answer   string
 }
 
-// readProblems reads all problems from a CSV file to a Problem slice.
-func readProblems(filename string) ([]Problem, error) {
+// readProblems reads all problems from a CSV file to a problem slice.
+func readProblems(filename string) ([]problem, error) {
 	file, err := os.Open(filename)
 	if err != nil {
-		return make([]Problem, 0), err
+		return make([]problem, 0), err
 	}
 	defer file.Close()
 
 	r := csv.NewReader(file)
 	records, err := r.ReadAll()
 	if err != nil {
-		return make([]Problem, 0), err
+		return make([]problem, 0), err
 	}
 
-	problems := make([]Problem, len(records))
+	problems := make([]problem, len(records))
 	for i, record := range records {
 		question := record[0]
 		answer := strings.TrimSpace(record[1])
-		problems[i] = Problem{question, answer}
+		problems[i] = problem{question, answer}
 	}
 
 	return problems, nil
@@ -47,7 +47,7 @@ func readProblems(filename string) ([]Problem, error) {
 // answerProblem prints the question of problem p at index i and reads the user answer
 // from standard input. It sends the result of the user answer as a boolean to
 // channel c.
-func answerProblem(p Problem, i int, c chan<- string) {
+func answerProblem(p problem, i int, c chan<- string) {
 	fmt.Printf("Problem #%d: %s = ", i+1, p.Question)
 
 	var answer string
@@ -59,7 +59,7 @@ func answerProblem(p Problem, i int, c chan<- string) {
 // answerProblems prints each question of the problem and reads the user answer
 // from standard input. It times out after limit seconds. It returns
 // the number of problems answered correctly.
-func answerProblems(problems []Problem, limit time.Duration) int {
+func answerProblems(problems []problem, limit time.Duration) int {
 	correct := 0
 	answerCh := make(chan string)
 	timeout := time.After(limit)
