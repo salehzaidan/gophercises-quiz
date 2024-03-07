@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -35,7 +36,7 @@ func readProblems(filename string) ([]Problem, error) {
 	problems := make([]Problem, len(records))
 	for i, record := range records {
 		question := record[0]
-		answer := record[1]
+		answer := strings.TrimSpace(record[1])
 		problems[i] = Problem{question, answer}
 	}
 
