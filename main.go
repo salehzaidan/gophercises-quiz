@@ -21,23 +21,22 @@ type Problem struct {
 
 // readProblems reads all problems from a CSV file to a Problem slice.
 func readProblems(filename string) ([]Problem, error) {
-	problems := make([]Problem, 0)
-
 	file, err := os.Open(filename)
 	if err != nil {
-		return problems, err
+		return make([]Problem, 0), err
 	}
 
 	r := csv.NewReader(file)
 	records, err := r.ReadAll()
 	if err != nil {
-		return problems, err
+		return make([]Problem, 0), err
 	}
 
-	for _, record := range records {
+	problems := make([]Problem, len(records))
+	for i, record := range records {
 		question := record[0]
 		answer := record[1]
-		problems = append(problems, Problem{question, answer})
+		problems[i] = Problem{question, answer}
 	}
 
 	return problems, nil
